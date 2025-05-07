@@ -8,11 +8,11 @@
     "start": "next start"
   },
   "dependencies": {
-    "firebase": "^10.7.0",
-    "@react-google-maps/api": "^2.18.1",
-    "next": "^14.1.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "next-pwa": "^5.6.0"
+    "firebase": "9.23.0",  // ← More stable version
+    "@react-google-maps/api": "2.18.1",
+    "next": "13.4.19",     // ← LTS version
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "next-pwa": "5.6.0"
   }
 }
