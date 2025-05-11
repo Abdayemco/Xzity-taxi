@@ -2,7 +2,7 @@ import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
 import { db } from '../lib/firebase';
 import { doc, setDoc } from 'firebase/firestore';
 import { useState } from 'react';
-import { useAuth } from 'react-firebase-hooks/auth';
+import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from '../lib/firebase';
 
 const mapContainerStyle = {
@@ -11,7 +11,7 @@ const mapContainerStyle = {
 };
 
 export default function BookRide() {
-  const [user] = useAuth(auth);
+  const [user] = useAuthState(auth);
   const [pickup, setPickup] = useState(null);
 
   const handleBookRide = async () => {
