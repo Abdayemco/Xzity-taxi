@@ -28,7 +28,7 @@ export default function BookRide() {
 
   return (
     <div>
-      <LoadScript googleMapsApiKey="YOUR_GOOGLE_MAPS_API_KEY">
+      <LoadScript googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
         <GoogleMap
           mapContainerStyle={mapContainerStyle}
           center={{ lat: 33.8938, lng: 35.5018 }} // Default to Beirut
