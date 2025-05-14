@@ -1,14 +1,23 @@
-import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
-import { db } from '../lib/firebase';
-import { doc, setDoc } from 'firebase/firestore';
 import { useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { auth } from '../lib/firebase';
+import { auth, db } from '../lib/firebase';
+import { doc, setDoc } from 'firebase/firestore';
+import dynamic from 'next/dynamic';
 
-const mapContainerStyle = {
-  width: '100%',
-  height: '400px'
-};
+// Dynamically import the map component (disables SSR)
+const MapWithNoSSR = dynamic(
+  () => import('@react-google-maps/api').then((mod) => {
+    return function MapComponent(props) {
+      return (
+        <mod.GoogleMap
+          mapContainerStyle={{ width: '100%', height: '400px' }}
+          {...props}
+        />
+      );
+    };
+  }),
+  { ssr: false }
+);
 
 export default function BookRide() {
   const [user] = useAuthState(auth);
@@ -28,17 +37,31 @@ export default function BookRide() {
 
   return (
     <div>
-      <LoadScript googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
-        <GoogleMap
-          mapContainerStyle={mapContainerStyle}
+      {/* LoadScript must be inside dynamic import */}
+      {process.browser && (
+        <MapWithNoSSR
           center={{ lat: 33.8938, lng: 35.5018 }} // Default to Beirut
           zoom={13}
-          onClick={(e) => setPickup({ lat: e.latLng.lat(), lng: e.latLng.lng() })}
+          onClick={(e) => setPickup({ 
+            lat: e.latLng.lat(), 
+            lng: e.latLng.lng() 
+          })}
         >
-          {pickup && <Marker position={pickup} />}
-        </GoogleMap>
-      </LoadScript>
-      <button onClick={handleBookRide}>Confirm Pickup</button>
+          {pickup && (
+            <Marker position={pickup} />
+          )}
+        </MapWithNoSSR>
+      )}
+      
+      <button onClick={handleBookRide}>
+        {pickup ? 'Confirm Pickup' : 'Select Pickup Location'}
+      </button>
     </div>
   );
-            }
+}
+
+// Marker must also be dynamically imported
+const Marker = dynamic(
+  () => import('@react-google-maps/api').then((mod) => mod.Marker),
+  { ssr: false }
+);
